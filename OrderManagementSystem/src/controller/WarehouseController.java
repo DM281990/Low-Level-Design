@@ -1,0 +1,32 @@
+package controller;
+
+import entity.location.Warehouse;
+import warehouse.strategy.impl.WarehouseSelectionStrategy;
+
+import java.util.List;
+
+public class WarehouseController {
+
+    List<Warehouse> warehouseList;
+    WarehouseSelectionStrategy warehouseSelectionStrategy = null;
+
+    public WarehouseController(List<Warehouse> warehouseList, WarehouseSelectionStrategy warehouseSelectionStrategy){
+        this.warehouseList = warehouseList;
+        this.warehouseSelectionStrategy = warehouseSelectionStrategy;
+    }
+
+    //add new warehouse
+    public void addNewWarehouse(Warehouse warehouse){
+        warehouseList.add(warehouse);
+    }
+
+    //remove warehouse
+    public void removeWarehouse(Warehouse warehouse){
+        warehouseList.remove(warehouse);
+    }
+
+    public Warehouse selectWarehouse(WarehouseSelectionStrategy selectionStrategy){
+        this.warehouseSelectionStrategy = selectionStrategy;
+        return warehouseSelectionStrategy.selectWarehouse(warehouseList);
+    }
+}

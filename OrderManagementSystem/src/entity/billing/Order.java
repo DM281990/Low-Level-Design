@@ -1,0 +1,58 @@
+package entity.billing;
+
+import entity.billing.payment.Payment;
+import entity.billing.payment.mode.impl.PaymentMode;
+import entity.billing.payment.mode.impl.UPIPaymentMode;
+import entity.enums.OrderStatus;
+import entity.location.Address;
+import entity.location.Warehouse;
+import entity.user.User;
+
+import java.util.Map;
+
+public class Order {
+
+    User user;
+    Address deliveryAddress;
+    Map<Integer, Integer> productCategoryAndCountMap;
+    Warehouse warehouse;
+    Invoice invoice;
+    Payment payment;
+    OrderStatus orderStatus;
+
+    public Order(User user, Warehouse warehouse){
+      this.user = user;
+      this.productCategoryAndCountMap = user.getUserCart().getCartItems();
+      this.warehouse = warehouse;
+      this.deliveryAddress = user.address;
+      invoice = new Invoice();
+      invoice.generateInvoice(this);
+    }
+
+    public void checkout(){
+
+        //1. update inventory
+        warehouse.removeItemFromInventory(productCategoryAndCountMap);
+
+        //2. make Payment
+        boolean isPaymentSuccess = makePayment(new UPIPaymentMode());
+
+        //3. make cart empty
+        if(isPaymentSuccess) {
+            user.getUserCart().emptyCart();
+        }
+        else{
+            warehouse.addItemToInventory(productCategoryAndCountMap);
+        }
+
+    }
+
+    public boolean makePayment(PaymentMode paymentMode){
+        payment = new Payment(paymentMode);
+       return payment.makePayment();
+    }
+
+    public void generateOrderInvoice(){
+        invoice.generateInvoice(this);
+    }
+}
