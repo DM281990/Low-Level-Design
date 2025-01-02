@@ -1,0 +1,1 @@
+This codebase involves low level design of frequently asked questions in LLD rounds of interview. With these questions, it would be easy to figure out remaining LLD questions. This would be of great help, for getting prepared for LLD round ASAP.
